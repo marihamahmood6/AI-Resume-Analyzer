@@ -1,4 +1,5 @@
 import streamlit as st
+import json
 
 from resume_parser import extract_text_from_file
 from ai_analyzer import analyze_resume
@@ -30,6 +31,11 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
+
+
+# Store analysis result
+if "results" not in st.session_state:
+    st.session_state.results = None
 
 
 # Create two columns
@@ -82,9 +88,36 @@ if st.button("Analyze Resume", use_container_width=True):
                     job_description
                 )
 
-                # 3. Display result
+                # 3. Save result
+                st.session_state.results = result
+
+                # 4. Display result
                 st.subheader("Resume Analysis")
                 st.write(result)
 
             except Exception as e:
                 st.error(f"An error occurred: {e}")
+
+
+# Display download button only after analysis is available
+if st.session_state.results is not None:
+
+    st.markdown("---")
+    st.subheader("Download Report")
+
+    # Convert result to JSON
+    if isinstance(st.session_state.results, str):
+        report_data = st.session_state.results
+    else:
+        report_data = json.dumps(
+            st.session_state.results,
+            indent=4
+        )
+
+    st.download_button(
+        label="Download Analysis Report (JSON)",
+        data=report_data,
+        file_name="resume_analysis_report.json",
+        mime="application/json",
+        use_container_width=True
+    )
