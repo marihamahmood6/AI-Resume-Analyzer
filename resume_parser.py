@@ -1,9 +1,9 @@
 import os
-import fitz  # PyMuPDF
+import pymupdf  # Replaces 'import fitz' to remove warning
 from docx import Document
 
 def extract_pdf_text(file_path):
-    document = fitz.open(file_path)
+    document = pymupdf.open(file_path)
     text = ""
     for page in document:
         text += page.get_text()
