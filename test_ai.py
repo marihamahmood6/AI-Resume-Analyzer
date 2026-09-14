@@ -1,13 +1,14 @@
-from openai import OpenAI
+import os
 from dotenv import load_dotenv
+from google import genai
 
 load_dotenv()
 
-client = OpenAI()
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-response = client.responses.create(
-    model="gpt-5.5",
-    input="Say hello and tell me you are ready to analyze resumes."
+response = client.models.generate_content(
+    model="gemini-3.6-flash",
+    contents="Say hello and confirm you are ready to analyze resumes."
 )
 
-print(response.output_text)
+print(response.text)
