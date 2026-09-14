@@ -1,25 +1,31 @@
 import os
+import json
 from dotenv import load_dotenv
 from google import genai
 
 load_dotenv()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
+
 def analyze_resume(resume_text, job_description):
     prompt = f"""
-    You are an expert HR Manager and ATS (Applicant Tracking System) optimizer.
-    
+    You are an expert HR Manager and ATS optimizer.
+    Analyze the resume against the job description and return the output ONLY in valid raw JSON format without markdown code blocks.
+
+    JSON Structure:
+    {{
+        "match_score": 78,
+        "summary": "Brief 2-sentence executive summary.",
+        "missing_keywords": ["Keyword 1", "Keyword 2", "Keyword 3"],
+        "strong_points": ["Strength 1", "Strength 2", "Strength 3"],
+        "actionable_suggestions": ["Suggestion 1", "Suggestion 2", "Suggestion 3"]
+    }}
+
     Target Job Description:
     {job_description}
     
     Candidate Resume Text:
     {resume_text}
-    
-    Please analyze the resume against the job description and provide:
-    1. Overall Match Score (0-100%)
-    2. Missing Keywords & Critical Skills
-    3. Strong Points
-    4. Actionable Suggestions for Improvement
     """
 
     response = client.models.generate_content(
@@ -27,4 +33,12 @@ def analyze_resume(resume_text, job_description):
         contents=prompt
     )
 
-    return response.text
+    raw_text = response.text.strip()
+    if raw_text.startswith("```json"):
+        raw_text = raw_text[7:]
+    if raw_text.startswith("```"):
+        raw_text = raw_text[3:]
+    if raw_text.endswith("```"):
+        raw_text = raw_text[:-3]
+
+    return json.loads(raw_text.strip())
