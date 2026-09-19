@@ -51,4 +51,4 @@ def analyze_resume(resume_text, job_description, max_retries=3):
             if ("429" in str(e) or "RESOURCE_EXHAUSTED" in str(e)) and attempt < max_retries - 1:
                 time.sleep(10)  # Wait 10 seconds before trying again
                 continue
-            raise e
+            raise 
