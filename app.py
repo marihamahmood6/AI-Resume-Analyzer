@@ -2,8 +2,6 @@ import streamlit as st
 import json
 from resume_parser import extract_text_from_file
 from ai_analyzer import analyze_resume
-
-# Page configuration
 st.set_page_config(
     page_title="AI Resume Analyzer", 
     layout="wide",
@@ -13,20 +11,15 @@ st.set_page_config(
 # Custom Styling
 st.markdown("""
     <style>
-    /* Google Fonts */
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap');
 
     html, body, [class*="css"] {
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
-
-    /* Dark Modern Background */
     .stApp {
         background-color: #0b0813;
         color: #e2e8f0;
     }
-
-    /* Top Pill Badge */
     .pill-badge {
         display: inline-block;
         padding: 6px 16px;
@@ -38,8 +31,6 @@ st.markdown("""
         font-weight: 600;
         margin-bottom: 24px;
     }
-
-    /* Main Headline */
     .hero-title {
         text-align: center;
         font-size: 3.5rem;
@@ -54,8 +45,6 @@ st.markdown("""
         font-weight: 400;
         color: #c084fc;
     }
-
-    /* Subtitle */
     .hero-subtitle {
         text-align: center;
         max-width: 650px;
@@ -64,16 +53,12 @@ st.markdown("""
         font-size: 1.05rem;
         line-height: 1.6;
     }
-
-    /* Input Card Containers */
     div[data-testid="stColumn"] > div {
         background: #120d21;
         border: 1px solid rgba(139, 92, 246, 0.15);
         border-radius: 16px;
         padding: 24px;
     }
-
-    /* Card Headers */
     .step-header {
         font-size: 0.95rem;
         font-weight: 700;
@@ -94,8 +79,6 @@ st.markdown("""
         color: #64748b;
         font-weight: 500;
     }
-
-    /* Text Area & File Uploader */
     .stTextArea textarea {
         background-color: #0b0813 !important;
         border: 1px solid rgba(139, 92, 246, 0.2) !important;
@@ -109,8 +92,6 @@ st.markdown("""
         border-radius: 12px;
         padding: 10px;
     }
-
-    /* Styled Buttons (Both Analyze & Download Buttons) */
     div.stButton > button, div.stDownloadButton > button {
         background: #18112c !important;
         color: #a855f7 !important;
@@ -129,8 +110,6 @@ st.markdown("""
         border-color: #a855f7 !important;
         box-shadow: 0 0 20px rgba(168, 85, 247, 0.4) !important;
     }
-
-    /* Tabs Styling */
     .stTabs [data-baseweb="tab-list"] {
         gap: 12px;
         background-color: transparent;
@@ -158,8 +137,6 @@ st.markdown("""
     .stTabs [data-baseweb="tab-highlight"] {
         display: none;
     }
-
-    /* Tab Content Box Alignment */
     .tab-content-box {
         background: #120d21;
         border: 1px solid rgba(139, 92, 246, 0.15);
@@ -183,8 +160,6 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
-
-# Hero Header Section
 st.markdown("""
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%; margin-bottom: 40px;">
         <div class="pill-badge">✦ AI-Powered Resume Analysis</div>
@@ -195,8 +170,6 @@ st.markdown("""
         </p>
     </div>
 """, unsafe_allow_html=True)
-
-# Two Column Input Layout
 col_left, col_right = st.columns([1, 1], gap="medium")
 
 with col_left:
@@ -227,11 +200,9 @@ with col_right:
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Session state initialization
 if "analysis_results" not in st.session_state:
     st.session_state["analysis_results"] = None
 
-# Action Button
 if st.button("✦ Analyze Resume & Match Score", use_container_width=True):
     if not uploaded_file:
         st.warning("Please upload a resume file first.")
@@ -248,7 +219,6 @@ if st.button("✦ Analyze Resume & Match Score", use_container_width=True):
                 else:
                     st.error(f"Error executing analysis: {e}")
 
-# Detailed Results Dashboard
 if st.session_state["analysis_results"]:
     results = st.session_state["analysis_results"]
     score = results.get("match_score", 0)
@@ -296,8 +266,6 @@ if st.session_state["analysis_results"]:
         for idx, item in enumerate(results.get("actionable_suggestions", []), 1):
             st.markdown(f'<div class="bullet-item"><b>{idx}.</b> {item}</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
-
-    # Styled Download Button
     st.download_button(
         label="Download Full Analysis Report (JSON)",
         data=json.dumps(results, indent=4),
